@@ -27,18 +27,23 @@ const fetchCountyByName = async (name) => {
   return result;
 };
 
-// handle Errors
-// Limit
 const SearchByNameForm = ({
   handleFormSubmitCallBack,
   handleFormResetCallBack,
 }) => {
   const [countryName, setCountryName] = useState('');
+  const [error, setError] = useState('');
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    const countryData = await fetchCountyByName(countryName);
-    handleFormSubmitCallBack(countryData);
+    const { data, message } = await fetchCountyByName(countryName);
+
+    if (message) {
+      setError(message);
+    } else {
+      setError('');
+    }
+    handleFormSubmitCallBack(data);
   };
 
   const handleFormReset = async (e) => {
@@ -65,8 +70,6 @@ const SearchByNameForm = ({
           value={countryName}
           onChange={(e) => handleOnChangeInput(e.target.value)}
         />
-        <span className="Input error"></span>
-
         <button
           className="SearchByNameForm-primary"
           type="submit"
@@ -77,6 +80,10 @@ const SearchByNameForm = ({
         <button className="SearchByNameForm-secondary" type="reset">
           reset
         </button>
+
+        <div>
+          <span className="Error">{error}</span>
+        </div>
       </form>
     </div>
   );
@@ -88,6 +95,28 @@ const Card = ({ children }) => {
       <>{children}</>
     </div>
   );
+};
+
+const CardGroup = ({ props }) => {
+  const listItems = props.map((country, index) => (
+    <li key={index} className="CardGroup-li">
+      <Card key={index}>
+        <CardContent props={country} />
+      </Card>
+    </li>
+  ));
+
+  const wrappedListItems = [];
+  for (let i = 0; i < listItems.length; i += 3) {
+    const sublist = listItems.slice(i, i + 3);
+    wrappedListItems.push(
+      <ul key={i} className="CardGroup-ul">
+        {sublist}
+      </ul>
+    );
+  }
+
+  return <div className="CardGroup">{wrappedListItems}</div>;
 };
 
 const CardContent = ({ props }) => {
@@ -117,10 +146,10 @@ const CardContent = ({ props }) => {
 };
 
 const App = () => {
-  const [countries, setCountries] = useState([]);
+  const [countries, setCountries] = useState(null);
 
   const onHandleFormSubmitCallBack = useCallback((fetchedCountries) => {
-    setCountries(fetchedCountries.data);
+    setCountries(fetchedCountries);
   }, []);
 
   const onHandleFormResetCallBack = useCallback(() => {
@@ -136,16 +165,7 @@ const App = () => {
           handleFormResetCallBack={onHandleFormResetCallBack}
         />
         <div className="Content">
-          {countries &&
-            countries.map((country) => {
-              return (
-                <>
-                  <Card>
-                    <CardContent props={country} />
-                  </Card>
-                </>
-              );
-            })}
+          {countries && <CardGroup props={countries} />}
         </div>
       </Card>
     </div>
