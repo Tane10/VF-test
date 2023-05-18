@@ -1,3 +1,37 @@
+.Card {
+  background-color: white;
+  border: solid;
+  border-color: rgb(229, 231, 235);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  width: max-content;
+  height: max-content;
+
+  /* w-full max-w-sm shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700 */
+}
+
+.SearchByNameForm-input {
+  border-radius: 0.5rem;
+}
+
+.SearchByNameForm-button {
+  background-color: #1a56db;
+  font-weight: bold;
+  color: white;
+  border-radius: 0.5rem;
+}
+.Title {
+  padding: 0.5rem;
+  margin: 0.5rem;
+  font-weight: bold;
+}
+
+.Container {
+  justify-content: center;
+  padding: 5rem;
+  margin: 5rem;
+}
+
 .App {
   text-align: center;
 }
